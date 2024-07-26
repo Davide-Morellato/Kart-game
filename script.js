@@ -77,17 +77,29 @@ function renderGrid() {
 function placeKart() {
 
     //[FASE 5]: creo una variabile a cui assegno le coordinate x e y
-    const contentCell = gridMatrix[kartPosition.y][kartPosition.x];
+    const contentRow = gridMatrix[kartPosition.y][kartPosition.x];
 
     //[FASE 5]: controllo il contenuto della cella
     //SE il contenuto della cella è vuoto
         //ALLORA interrompi il flusso di gioco
-    if(contentCell !== ''){
+    // if(contentRow !== ''){
         // alert ('GAME OVER')
         //invoco la funzione di gameOver()
+        // gameOver();
+    // }
+
+    //[FASE 6]: controllo il contenuto della cella
+    //SE nella cella è presente 'coins'
+        //ALLORA assegna i punti bonus
+    //ALTRIMENTI SE il contenuto della cella è vuoto
+        //interrompi il flusso di gioco
+    if(contentRow === 'coin'){
+        getBonus();
+
+    }else if(contentRow !== ''){
         gameOver();
     }
-    
+
     //prendo i valori delle coordinate x e y dell'oggetto kartPosition e li assegno all'array (gridMatrix),
     //assegnando la classe '.kart' per visualizzarlo
     gridMatrix[kartPosition.y][kartPosition.x] = 'kart';
@@ -215,8 +227,23 @@ function scrollObstacles(){
     //rimuovo temporaneamente il kart dalla griglia
     gridMatrix[kartPosition.y][kartPosition.x] = '';
 
+    //
+    //[FASE 6]: creo una nuova variabile a cui associo la funzione di controllo
+    const coinInGame = searchCoin();
+
     //creo una variabile per rimuovere l'ultima riga dell'array grazie al metodo pop()
     let lastRow = gridMatrix.pop();
+
+    //
+    //[FASE 6]: inserisco la moneta nella prima riga della schermata
+    // lastRow = placeCoin(lastRow);
+    //
+    //[FASE 6]: controllo la presenza di monete
+    //SE non ci sono monete
+        //ALLORA inserisci la moneta
+    if(!coinInGame){
+        lastRow = placeCoin(lastRow);
+    }
 
     //mescolo gli elementi delle righe degli array richiamando la funzione randomizeElements()
     //assegnandola alla variabile lastRow
@@ -347,6 +374,74 @@ playAgain.addEventListener( 'click', function(){
 })
 
 
+//
+// FASE 6: INSERIMENTO MONETE E ASSEGNAZIONE BONUS
+//
+
+//
+//dichiaro una funzione per inserire dinamicamente la monetina nella riga
+function placeCoin(row){
+
+    //individuo l'indice vuoto della prima riga, mediante indexOf()
+    const emptyIndex = row.indexOf('');
+
+    //assegno all'indice vuoto la moneta
+    row[emptyIndex] = 'coin';
+
+    //restituisco la riga aggiornata con la moneta
+    return row
+}
+
+//
+//2. INSERISCO LA MONETA NELLA RIGA IN scollObstacles()
+
+//
+//dichiaro una funzione che controlli la presenza di un'eventuale moneta nella grigla di gioco
+function searchCoin(){
+
+    //creo un flag di partenza (booleano: true o false), assumendo che non ci sia dall'inzio
+    let coinFound = false;
+
+    //recupero le righe della griglia di gioco e, per ognuna di essa, controllo se c'è una moneta
+    gridMatrix.forEach(function(row){
+
+        //controllo la presenza di una moneta
+        //SE la riga include la moneta
+            //ALLORA il flag deve diventare TRUE
+        if(row.includes('coin')){
+            coinFound = true;
+        }
+    })
+    
+    //restituisco il valore di coinFound (true || false) -> FUORI DAL forEach per evitare che ne metta continuamente
+    return coinFound;
+}
+
+//
+//3. CONTROLLO LA PRESENZA DELLA MONETA IN scrollObstacles()
+
+//
+//dichiaro una funzione per aumentare il punteggio quando il kart impatta la moneta (coin)
+function getBonus(){
+
+    //incremento il punteggio di 30 pt
+    score += 30;
+
+    //inserisco il punteggio aggiornato in pagina, attraverso il contatore scoreCounter
+    scoreCounter.innerText = score;
+
+    //aggiungo la classe "bonus" al contatore
+    scoreCounter.classList.add('bonus');
+
+    //rimuovo la classe "bonus" al contatore, grazie a setTimeout(), così da potersi mostrare ogni volta che la monetina viene colpita
+    //setTimeout() accetta due parametri: il primo è una funzione, il secondo è il tempo entro cui deve svolgerla
+    setTimeout(function(){  
+        scoreCounter.classList.remove('bonus');
+    }, 300);
+}
+
+//
+//4. IN placeKart() cambio il controllo precedentemente impostato, per fare in modo che all'impatto con la moneta il gioco non termini
 
 //
 //invoco la funzione renderingFunction()
