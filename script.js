@@ -7,15 +7,15 @@
 //un array contenente altri array (=rows) che conterranno ciascuno degli elementi(=cells)
 //che popoleranno la griglia ['' = caselle vuote]
 const gridMatrix = [
-    ['rock', '', '', '', '', 'grass', ''],
+    ['', '', '', '', '', 'grass', ''],
     ['', '', 'cones', '', '', '', 'water'],
     ['', '', '', '', 'rock', '', ''],
     ['', 'fence', '', '', '', '', ''],
-    ['', '', 'grass', '', '', 'water', ''],
-    ['', '', '', 'cones', '', '', ''],
-    ['', 'water', '', '', '', '', 'grass'],
+    ['', '', '', '', '', 'water', ''],
+    ['', '', 'cones', '', '', '', ''],
+    ['', '', '', '', '', '', 'grass'],
     ['fence', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', ''],
+    ['', '', '', '', '', 'rock', ''],
 ];
   
 //console.table(gridMatrix) <-Consente di vedere in console come è strutturata la griglia
@@ -31,7 +31,7 @@ const grid = document.querySelector('.grid');
 //La posizione del Kart deve essere dinamica,
 //quindi dichiaro una variabile a cui assegno un oggetto con coordinate x e y per la posizione del Kart nella griglia
 const kartPosition = {
-    y: 8,
+    y: 7,
     x: 3,
 };
   
@@ -75,6 +75,19 @@ function renderGrid() {
 //
 //dichiaro una funzione per posizionare il kart
 function placeKart() {
+
+    //[FASE 5]: creo una variabile a cui assegno le coordinate x e y
+    const contentCell = gridMatrix[kartPosition.y][kartPosition.x];
+
+    //[FASE 5]: controllo il contenuto della cella
+    //SE il contenuto della cella è vuoto
+        //ALLORA interrompi il flusso di gioco
+    if(contentCell !== ''){
+        // alert ('GAME OVER')
+        //invoco la funzione di gameOver()
+        gameOver();
+    }
+    
     //prendo i valori delle coordinate x e y dell'oggetto kartPosition e li assegno all'array (gridMatrix),
     //assegnando la classe '.kart' per visualizzarlo
     gridMatrix[kartPosition.y][kartPosition.x] = 'kart';
@@ -82,7 +95,7 @@ function placeKart() {
   
 //
 //Raggruppo le funzioni di preparazione
-function renderingFunction() {
+function renderingFunctions() {
     //invoco la funzione placeKart()
     placeKart();
 
@@ -120,7 +133,7 @@ rightButton.addEventListener('click', function () {
 //
 //aggiungo un evento alla pressione di un tasto 'keyup',
 //assegnando alla funzione un parametro per quell'evento (event)
-document.addEventListener('keyup', function (event) {
+document.addEventListener('keyup', function(event) {
     // console.log(event.key); <- 'evento.key' consente di leggere in console il tasto premuto: FRECCIA DESTRA = ArrowRight; FRECCIA SINISTRA = ArrowLeft
 
     //dichiaro il metodo switch()
@@ -187,10 +200,52 @@ function moveKart(directionKart) {
 
     //invoco la funzione di preparazione della griglia,
     //in questo modo verrà aggiornata alla nuova posizione del Kart
-    renderingFunction();
+    renderingFunctions();
+}
+
+
+//
+// FASE 3: MOVIMENTO DEGLI OSTACOLI
+//
+
+//
+//dichiaro una funzione che mi permetta di scorrere gli ostacoli
+function scrollObstacles(){
+
+    //rimuovo temporaneamente il kart dalla griglia
+    gridMatrix[kartPosition.y][kartPosition.x] = '';
+
+    //creo una variabile per rimuovere l'ultima riga dell'array grazie al metodo pop()
+    let lastRow = gridMatrix.pop();
+
+    //mescolo gli elementi delle righe degli array richiamando la funzione randomizeElements()
+    //assegnandola alla variabile lastRow
+    lastRow = randomizeElements(lastRow); //lastRow deve modificarsi in base all'algoritmo in randomizeElements()
+
+    //riporto la riga modificata in cima all'array, con il metodo unshift()
+    gridMatrix.unshift(lastRow)
+
+    renderingFunctions();
 }
 
 //
+//dichiaro una funzione che mescoli gli ostacoli, sfruttando l'Algoritmo di Fisher-Yates
+function randomizeElements(row){
+    for (let i = row.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [row[i], row[j]] = [row[j], row[i]];
+    }
+
+    return row;
+}
+
+
+//
 //invoco la funzione renderingFunction()
-renderingFunction();
+// renderingFunctions();
+//
+//dichiaro la funzione setInterval() in cui dichiaro la funzione che deve eseguire e l'intervallo di tempo con cui eseguirla
+setInterval(scrollObstacles, 500);
+
+
 
