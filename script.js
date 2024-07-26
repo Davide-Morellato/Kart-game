@@ -142,6 +142,7 @@ rightButton.addEventListener('click', function () {
     moveKart('right');
 });
 
+
 //
 //aggiungo un evento alla pressione di un tasto 'keyup',
 //assegnando alla funzione un parametro per quell'evento (event)
@@ -167,6 +168,14 @@ document.addEventListener('keyup', function(event) {
         //richiamo la funzione movekart() per indicare in quale posizione deve spostarsi il kart
         moveKart('right');
         // console.log('dx')
+        break;
+
+        //nel caso in cui venga premuta la barra spaziatrice (' '):
+        //invoca turboBoost();
+        //e interrompi il ciclo di ricerca;
+        case ' ':
+        //richiamo la funzione turboBoost() per modificare il turboButton
+        turboBoost();
         break;
 
         //per tutti gli altri casi, ritorna al tuo stato iniziale e non eseguire nulla (default: return)
@@ -266,7 +275,6 @@ function randomizeElements(row){
     return row;
 }
 
-
 //
 // FASE 4: INCREMENTO PUNTEGGIO E VELOCITA'
 //
@@ -320,16 +328,16 @@ function gameFlow(){
     //controllo che la velocità aumenti anche in base al punteggio
     //SE il punteggio dà resto 15 (operatore MODULO %)
         //ALLORA incrementa la velocità
-    if(score % 15 === 0){
+    //[FASE 7: commento e sposto incrementSpeed() nella funzione turboBoost()]
+    // if(score % 15 === 0){
 
-        //importo l'incremento della velocità
-        incrementSpeed();
-    }
+    //     //importo l'incremento della velocità
+    //     incrementSpeed();
+    // }
 
     //importo il movimento degli ostacoli
     scrollObstacles();
 }
-
 
 //
 // FASE 5: IMPATTO CON GLI OSTACOLI E GAME OVER
@@ -442,6 +450,46 @@ function getBonus(){
 
 //
 //4. IN placeKart() cambio il controllo precedentemente impostato, per fare in modo che all'impatto con la moneta il gioco non termini
+
+
+//
+// FASE 7: ACCELERAZIONE
+//
+
+//
+//recupero il bottone di accelerazione
+const turboButton = document.querySelector('.turbo');
+
+//
+//imposto un valore di partenza per il turbo
+let turbo = 1;
+
+//
+//dichiaro una funzione per modificare la posizione della lancetta cambiando il valore dell'immagine
+function turboBoost(){
+
+    // //controllo che il valore dell'immagine non superi il massimo disponibile nella cartella images (MAX: gauge-4)
+    // //SE il turbo è MINORE di 4
+    //     //ALLORA aggiorna l'immagine dinamicamente,
+    //     //prendendo il bottone e inserendo la nuova immagine
+    //     //per mostrare una diversa posizione della lancetta
+    //     //grazie ad innerHTML e i backtick ``
+    if(turbo < 4){
+        turboButton.innerHTML = `<img src="images/gauge-${++turbo}.png" alt="turbo">`
+
+        //invoco la funzione incrementSpeed() per far incrementare la velocità al click sul pulsante
+        incrementSpeed();
+    }
+}
+
+//
+//aggiungo un evento al click sul turboButton, cosicché al click aggiorni l'immagine,
+//passandogli come secondo parametro la funzione turboBoost
+turboButton.addEventListener('click', turboBoost);
+
+//
+//5. AGGIUNGO UN EVENTO DI KEYUP ALL'EVENT LISTENER PER IL TURBOBOOST() IN document.addEventListener('keyup', function(event) [RIGA 149]
+
 
 //
 //invoco la funzione renderingFunction()

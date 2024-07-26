@@ -132,7 +132,6 @@ header img {
 	height: 96px;
 	padding: 0 20px;
 	padding-top: 20px;
-
 	display: flex;
 	gap: 15px;
 	justify-content: space-between;
@@ -316,4 +315,13 @@ a.button:active {
 		top: -20px;
 		opacity: 1;
 	}
+}
+
+/* aggiungo la classe turbo */
+.turbo{
+	flex-grow: 1;
+}
+
+.turbo img{
+	width: 100%;
 }
