@@ -241,11 +241,123 @@ function randomizeElements(row){
 
 
 //
+// FASE 4: INCREMENTO PUNTEGGIO E VELOCITA'
+//
+
+//
+//creo due variabili, una per il punteggio (score) ed una per la velocità (speed), che dovranno cambiare in base al tempo
+let score = 0;
+
+let speed = 500;
+
+//
+//recupero l'elemento per il punteggio dal DOM
+const scoreCounter = document.querySelector('.score-counter');
+
+//
+//dichiaro una funzione che incrementi il punteggio stampato in pagina
+function scoreIncrement(){
+
+    //aumento il punteggio di 1, prendendo il testo inserito nel tag HTML, così da modificarsi al cambiare del tempo
+    scoreCounter.innerText = ++score;
+
+}
+
+//
+//dichiaro una funzione che aumenti la velocità in base al tempo (inversamente proporzionali, al diminuire del tempo aumenta la velocità di scorrimento degli ostacoli)
+function incrementSpeed(){
+
+    //controllo l'incremento della velocità:
+    //SE la velocità è > 150
+        //ALLORA interrompi il flusso di gioco, aumenta la velocità & crea un nuovo flusso di gioco
+    if(speed > 150){
+
+        //interrompo il flusso di gioco iniziale, grazie a clearInterval(), richiamando la variabile che racchiude setInterval()
+        clearInterval(gameLoop);
+    
+        //aumento la velocità, dimuendo il tempo
+        speed -= 100;
+    
+        //creo un nuovo flusso di gioco, precedentemente interrotto, con la nuova velocità
+        gameLoop = setInterval(gameFlow, speed);
+    }
+}
+
+//
+//dichiaro una funzione che raggruppi le operazioni cicliche
+function gameFlow(){
+
+    //importo l'incremento del punteggio
+    scoreIncrement();
+
+    //controllo che la velocità aumenti anche in base al punteggio
+    //SE il punteggio dà resto 15 (operatore MODULO %)
+        //ALLORA incrementa la velocità
+    if(score % 15 === 0){
+
+        //importo l'incremento della velocità
+        incrementSpeed();
+    }
+
+    //importo il movimento degli ostacoli
+    scrollObstacles();
+}
+
+
+//
+// FASE 5: IMPATTO CON GLI OSTACOLI E GAME OVER
+//
+
+//1. IN placeKart() recupero il contenuto della cella e lo controllo
+
+//
+//recupero l'elemento end-game-screen dal DOM per fare in modo che compaia quando vengono impattati gli ostacoli
+const endGame = document.querySelector('.end-game-screen');
+
+//
+//recupero l'elemento final-score dal DOM per mostrare nella pagina di Game Over il punteggio finale
+const finalScore = document.querySelector('.final-score');
+
+//
+//dichiaro una funzione che interrompa il flusso di gioco e mostri la schermata Game Over
+function gameOver(){
+
+    //interrompo il flusso di gioco
+    clearInterval(gameLoop);
+
+    //stampo in pagina il punteggio finale richiamando la variabile dinamica score
+    finalScore.innerText = score;
+
+    //mostro la schermata di Game over, rimuovendo la classe hidden
+    endGame.classList.remove('hidden')
+
+    //imposto il bottone playAgain come preselezionato, così da reagire a qualsiasi evento da tastiera
+    playAgain.focus();
+}
+
+//
+//recupero il bottone "gioca ancora" per ricaricare la pagina al click e riavviare il gioco
+const playAgain = document.querySelector('.play-again');
+
+//
+//associo un evento di ascolto al click al bottone, così da far ripartire il gioco
+playAgain.addEventListener( 'click', function(){
+
+    location.reload() //<- ricarica la pagina e fa ripartire il gioco
+})
+
+
+
+//
 //invoco la funzione renderingFunction()
 // renderingFunctions();
 //
 //dichiaro la funzione setInterval() in cui dichiaro la funzione che deve eseguire e l'intervallo di tempo con cui eseguirla
-setInterval(scrollObstacles, 500);
-
+// setInterval(scrollObstacles, 500);
+//
+//associo la funzione setInterval() ad una variabile, così da poter essere richiamata in incrementSpeed().
+//sostituisco scrollObstacoles come primo parametro con gameFlow, perchè racchiude il flusso del gioco, 
+//e ho associato il valore del tempo alla variabile speed, così da diventare dinamica al cambiare del valore
+let gameLoop = setInterval(gameFlow, speed); 
 
 
