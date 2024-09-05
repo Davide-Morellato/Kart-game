@@ -201,7 +201,7 @@ a.button:active {
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 	background-clip: text;
-	text-fill-color: transparent;
+	-webkit-text-fill-color: transparent;
 	margin-bottom: 10px;
 }
 
@@ -232,7 +232,7 @@ a.button:active {
 .character {
 	height: 190px;
 	width: auto;
-	margin-bottom: 9px;
+	margin-bottom: 20px;
 }
 
 .cta {
@@ -240,22 +240,19 @@ a.button:active {
 	top: -35px;
 }
 
-.learn-code,
 .end-game-screen button {
 	display: block;
 	width: 100%;
 	align-content: center;
-
-	margin-bottom: 24px;
+	margin-bottom: 50px;
 	height: calc(56px - 10px); /*compensazione ombra */
 }
 
-.instagram-cta {
+.github-cta {
 	margin-top: 30px;
 	height: 44px;
 	border-radius: 15px;
 	background-color: #ecffb3;
-
 	line-height: 18px;
 	font-size: 12px;
 	font-family: Inter, sans-serif;
@@ -264,20 +261,22 @@ a.button:active {
 	align-items: center;
 	gap: 8px;
 	overflow: hidden;
+	justify-content: center;
+	text-decoration: none;
 }
 
-.instagram-cta .logo {
+.github-cta .logo {
 	flex-basis: 40px;
 	height: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-shrink: 0;
-	background-image: linear-gradient(to top, #fed11f, #ff543e, #cb37ab);
+	padding: 5px;
 }
 
-.instagram-cta img {
-	width: 60%;
+.github-cta img {
+	width: 90%;
 	height: auto;
 }
 
